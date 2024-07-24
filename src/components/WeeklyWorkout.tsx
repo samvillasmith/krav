@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { WeeklyWorkout as WeeklyWorkoutType } from '@/types/workout';
+import { WeekData, Workout } from '@/types/workouts';
 import Link from 'next/link';
 import WeekProgress from './WeekProgress';
 import { useAuth } from '@clerk/nextjs';
 
 type WeeklyWorkoutProps = {
-  weeklyWorkout: WeeklyWorkoutType;
+  weeklyWorkout: WeekData;
 };
 
 const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
@@ -35,6 +35,16 @@ const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
     fetchCompletedDays();
   }, [weeklyWorkout.week, getToken]);
 
+  const getWorkoutDescription = (workouts: string | Workout[]): string => {
+    if (Array.isArray(workouts)) {
+      return `${workouts.length} exercises`;
+    } else if (typeof workouts === 'string') {
+      return workouts;
+    } else {
+      return 'Unknown workout type';
+    }
+  };
+
   return (
     <div className="mb-8 bg-gray-800 bg-opacity-50 p-4 rounded-lg">
       <h2 className="text-2xl font-bold mb-4 text-blue-400">Week {weeklyWorkout.week}</h2>
@@ -50,12 +60,11 @@ const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
               {day}
             </h3>
             <p className="text-gray-300 text-xs sm:text-sm md:text-base">
-              {Array.isArray(workouts) 
-                ? `${workouts.length} exercises` 
-                : typeof workouts === 'object' 
-                  ? workouts.name 
-                  : workouts}
+              {getWorkoutDescription(workouts)}
             </p>
+            {completedDays.includes(day.toLowerCase()) && (
+              <span className="text-green-500 ml-2">✓</span>
+            )}
           </Link>
         ))}
       </div>

@@ -1,11 +1,10 @@
-// src/app/api/completedDays/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { getAuth } from '@clerk/nextjs/server';
 
 const prisma = new PrismaClient();
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { userId } = getAuth(request);
 
@@ -13,8 +12,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
     }
 
-    const { searchParams } = new URL(request.url);
-    const weekNumber = searchParams.get('week');
+    const weekNumber = request.nextUrl.searchParams.get('week');
 
     if (!weekNumber) {
       return NextResponse.json({ error: 'Week number is required' }, { status: 400 });

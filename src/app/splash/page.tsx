@@ -5,7 +5,7 @@ import Link from 'next/link';
 const SplashPage = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', textAlign: 'center' }}>
-      <h1>Welcome to Workout Tracker</h1>
+      <h1>Welcome to Krav</h1>
       <p>Your ultimate fitness companion</p>
       <div style={{ marginTop: '20px' }}>
         <Link href="/sign-up">

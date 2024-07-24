@@ -23,7 +23,7 @@ export default function DayPage({ params }: { params: { weekNumber: string, dayN
   const dayName = params.dayName;
   const weekData = workoutData.weekly_workouts.find(w => w.week === weekNumber) as WeekData;
 
-  if (!weekData || !weekData.workouts[dayName]) {
+  if (!weekData || !weekData.workouts[dayName as keyof WeekWorkouts]) {
     return <div>Workout not found</div>;
   }
 
@@ -33,16 +33,15 @@ export default function DayPage({ params }: { params: { weekNumber: string, dayN
     }, 3000);
   }, [weekNumber, router]);
 
-  const dayWorkouts = weekData.workouts[dayName];
-
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
       <Link href={`/week/${weekNumber}`} className="mb-4 text-blue-500 hover:underline">Back to Week {weekNumber}</Link>
       <h1 className="text-4xl font-bold mb-8">{dayName} - Week {weekNumber}</h1>
       <WorkoutDay 
         day={dayName} 
-        workouts={dayWorkouts}
+        workouts={weekData.workouts[dayName as keyof WeekWorkouts] as Workout[]} 
         onComplete={handleWorkoutComplete}
+        weekNumber={weekNumber}
       />
     </main>
   );

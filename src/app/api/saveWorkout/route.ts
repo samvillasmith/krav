@@ -14,7 +14,6 @@ export async function POST(req: NextRequest) {
 
     const { day, workoutRecord, weekNumber } = await req.json();
 
-    // Save each exercise set as a separate record
     for (const [exerciseName, sets] of Object.entries(workoutRecord)) {
       for (const set of sets as { setNumber: number; reps: string; weight: string }[]) {
         await prisma.workout.create({
@@ -30,17 +29,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Update user's completed workouts
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (user) {
-      const completedWorkouts = user.completedWorkouts ? user.completedWorkouts.split(',') : [];
+      const completedDays = user.completedWorkouts ? user.completedWorkouts.split(',') : [];
       const workoutId = `${weekNumber}-${day.toLowerCase()}`;
-      if (!completedWorkouts.includes(workoutId)) {
-        completedWorkouts.push(workoutId);
+      if (!completedDays.includes(workoutId)) {
+        completedDays.push(workoutId);
         await prisma.user.update({
           where: { id: userId },
           data: {
-            completedWorkouts: completedWorkouts.join(','),
+            completedWorkouts: completedDays.join(','),
           },
         });
       }

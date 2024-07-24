@@ -14,7 +14,7 @@ export default function Home() {
   if (!isSignedIn) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
-        <h1 className="text-4xl font-bold mb-8">Welcome to Workout Tracker</h1>
+        <h1 className="text-4xl font-bold mb-8">Welcome to Krav</h1>
         <p className="mb-4">Please sign in to view your workouts</p>
       </main>
     );

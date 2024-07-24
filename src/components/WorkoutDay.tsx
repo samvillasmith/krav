@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Workout } from '@/types/workout';
+import { Workout } from '@/types/workouts';
 import Timer from './Timer';
 import Toast from './Toast';
 import { useAuth } from '@clerk/nextjs';

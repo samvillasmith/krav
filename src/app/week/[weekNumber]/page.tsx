@@ -3,10 +3,15 @@
 import { useSearchParams } from 'next/navigation';
 import WeekPageClient from './WeekPageClient';
 import { workoutData } from '@/data/WorkoutData';
-import { Workout } from '@/data/workouts';
 
 type WeekWorkouts = {
-  [key: string]: string | Workout[];
+  Monday: string;
+  Tuesday: Workout[];
+  Wednesday: Workout[];
+  Thursday: Workout[];
+  Friday: Workout[];
+  Saturday: Workout[];
+  Sunday: Workout[];
 };
 
 type WeekData = {
@@ -14,10 +19,24 @@ type WeekData = {
   workouts: WeekWorkouts;
 };
 
+type Workout = {
+  name: string;
+  sets: number;
+  reps?: string | number;
+  duration?: string;
+  rest?: string;
+  work?: string;
+  exercises?: {
+    name: string;
+    reps: number;
+    duration?: string;
+  }[];
+};
+
 export default function WeekPage({ params }: { params: { weekNumber: string } }) {
   const weekNumber = parseInt(params.weekNumber);
   const searchParams = useSearchParams();
-  const justCompletedDay = searchParams.get('completed');
+  const justCompletedDay = searchParams.get('completed') || undefined;
 
   const weekData = workoutData.weekly_workouts.find(w => w.week === weekNumber) as WeekData;
   if (!weekData) {

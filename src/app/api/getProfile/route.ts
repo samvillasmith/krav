@@ -33,5 +33,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("Error fetching profile:", error);
     return NextResponse.json({ error: 'An error occurred while fetching your profile' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 }

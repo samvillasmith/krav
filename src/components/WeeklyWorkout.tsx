@@ -1,5 +1,5 @@
 import React from 'react';
-import { Workout } from '@/types/workouts';  // Update this line
+import { WeeklyWorkout as WeeklyWorkoutType } from '@/types/workouts';  // Update this line
 import Link from 'next/link';
 
 type WeeklyWorkoutProps = {

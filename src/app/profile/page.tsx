@@ -8,6 +8,11 @@ interface UserProfile {
   weight: number | null;
   goal: string | null;
   updatedAt: string | null;
+  totalReps: number;
+  totalSets: number;
+  totalWeightLifted: number;
+  totalDaysCompleted: number;
+  totalWeeksCompleted: number;
 }
 
 export default function ProfilePage() {
@@ -105,6 +110,12 @@ export default function ProfilePage() {
           <p>Height: {profile.height} inches</p>
           <p>Weight: {profile.weight} lbs</p>
           <p>Goal: {profile.goal}</p>
+          <h3 className="text-xl font-bold mt-6 mb-2">Workout Statistics</h3>
+          <p>Total Reps: {profile.totalReps}</p>
+          <p>Total Sets: {profile.totalSets}</p>
+          <p>Total Weight Lifted: {profile.totalWeightLifted} lbs</p>
+          <p>Total Days Completed: {profile.totalDaysCompleted}</p>
+          <p>Total Weeks Completed: {profile.totalWeeksCompleted}</p>
           <p className="mt-4 text-sm text-gray-400">Last Updated: {new Date(profile.updatedAt || '').toLocaleString()}</p>
         </div>
       )}

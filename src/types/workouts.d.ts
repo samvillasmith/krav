@@ -12,9 +12,17 @@ export type Workout = {
   }[];
 };
 
-export type WeeklyWorkout = {
-week: number;
-workouts: {
-  [day: string]: Workout[];
+export type WeekWorkouts = {
+Monday: string | Workout[];
+Tuesday: Workout[];
+Wednesday: Workout[];
+Thursday: Workout[];
+Friday: Workout[];
+Saturday: Workout[];
+Sunday: Workout[];
 };
+
+export type WeekData = {
+week: number;
+workouts: WeekWorkouts;
 };

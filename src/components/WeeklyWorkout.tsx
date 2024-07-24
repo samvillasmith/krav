@@ -1,9 +1,9 @@
 import React from 'react';
-import { WeeklyWorkout as WeeklyWorkoutType } from '@/types/workouts';
+import { WeekData } from '@/types/workouts';
 import Link from 'next/link';
 
 type WeeklyWorkoutProps = {
-  weeklyWorkout: WeeklyWorkoutType;
+  weeklyWorkout: WeekData;
 };
 
 const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
@@ -13,13 +13,17 @@ const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
       {Object.entries(weeklyWorkout.workouts).map(([day, workouts]) => (
         <div key={day} className="mb-4">
           <h3 className="text-xl font-semibold mb-2">{day}</h3>
-          <ul>
-            {workouts.map((workout, index) => (
-              <li key={index} className="mb-1">
-                {workout.name} - {workout.sets} sets, {workout.reps} reps
-              </li>
-            ))}
-          </ul>
+          {Array.isArray(workouts) ? (
+            <ul>
+              {workouts.map((workout, index) => (
+                <li key={index} className="mb-1">
+                  {workout.name} - {workout.sets} sets, {workout.reps} reps
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>{workouts}</p>
+          )}
           <Link href={`/week/${weeklyWorkout.week}/day/${day}`} className="text-blue-500 hover:underline">
             View Details
           </Link>

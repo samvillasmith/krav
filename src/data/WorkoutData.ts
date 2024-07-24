@@ -1,3 +1,15 @@
+import { Workout } from './workouts';
+
+type WeekWorkouts = {
+  [key: string]: string | Workout[];
+};
+
+type WeekData = {
+  week: number;
+  workouts: WeekWorkouts;
+};
+
+
 export const workoutData = {
   "phase": 1,
   "duration": "12 weeks",
@@ -470,5 +482,5 @@ export const workoutData = {
         "Monday": "Rest Day"
       }
     }
-  ]
+  ] as WeekData[]
 };

@@ -1,17 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { getAuth } from '@clerk/nextjs/server';
-
-let prisma: PrismaClient;
-
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient();
-} else {
-  if (!(global as any).prisma) {
-    (global as any).prisma = new PrismaClient();
-  }
-  prisma = (global as any).prisma;
-}
+import { prisma } from '@/lib/prisma';
 
 export async function GET(req: NextRequest) {
   try {
@@ -33,7 +22,5 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("Error fetching profile:", error);
     return NextResponse.json({ error: 'An error occurred while fetching your profile' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }

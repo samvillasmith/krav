@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String    @id
+  email            String    @unique
+  week             Int       @default(1)
+  age              Int?
+  height           Int?
+  weight           Float?
+  goal             String?
+  completedWorkouts String    @default("") // Store as a comma-separated string
+  workouts         Workout[]
+  updatedAt        DateTime  @updatedAt
+}
+
+model Workout {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  day       String
+  exercise  String
+  sets      Int
+  reps      Int
+  weight    Float
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}

@@ -1,14 +1,4 @@
-import { Workout } from './workouts';
-
-type WeekWorkouts = {
-  [key: string]: string | Workout[];
-};
-
-type WeekData = {
-  week: number;
-  workouts: WeekWorkouts;
-};
-
+import { WeekData } from '@/types/workouts';
 
 export const workoutData = {
   "phase": 1,

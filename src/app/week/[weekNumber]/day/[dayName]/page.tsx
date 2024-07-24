@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 
 import { useCallback } from 'react';
@@ -5,29 +6,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { workoutData } from '../../../../../data/WorkoutData';
 import WorkoutDay from '@/components/WorkoutDay';
-
-type Workout = {
-  name: string;
-  sets: number;
-  reps?: string | number;
-  duration?: string;
-  rest?: string;
-  work?: string;
-  exercises?: {
-    name: string;
-    reps: number;
-    duration?: string;
-  }[];
-};
+import { Workout } from '@/types/workouts';
 
 type WeekWorkouts = {
-  Monday: string;
-  Tuesday: Workout[];
-  Wednesday: Workout[];
-  Thursday: Workout[];
-  Friday: Workout[];
-  Saturday: Workout[];
-  Sunday: Workout[];
+  [key: string]: string | Workout[];
 };
 
 type WeekData = {
@@ -41,16 +23,17 @@ export default function DayPage({ params }: { params: { weekNumber: string, dayN
   const dayName = params.dayName;
   const weekData = workoutData.weekly_workouts.find(w => w.week === weekNumber) as WeekData;
 
-  if (!weekData || !weekData.workouts[dayName as keyof WeekWorkouts]) {
+  if (!weekData || !weekData.workouts[dayName]) {
     return <div>Workout not found</div>;
   }
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const handleWorkoutComplete = useCallback((day: string) => {
     setTimeout(() => {
       router.push(`/week/${weekNumber}?completed=${day}`);
     }, 3000);
   }, [weekNumber, router]);
+
+  const dayWorkouts = weekData.workouts[dayName];
 
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
@@ -58,7 +41,7 @@ export default function DayPage({ params }: { params: { weekNumber: string, dayN
       <h1 className="text-4xl font-bold mb-8">{dayName} - Week {weekNumber}</h1>
       <WorkoutDay 
         day={dayName} 
-        workouts={weekData.workouts[dayName as keyof WeekWorkouts] as Workout[]} 
+        workouts={dayWorkouts}
         onComplete={handleWorkoutComplete}
       />
     </main>

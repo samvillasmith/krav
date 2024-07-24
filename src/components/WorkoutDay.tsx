@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Workout } from '@/types/workouts';
+import { Workout, StandardWorkout, HIITWorkout, DurationWorkout, CircuitWorkout } from '@/types/workouts';
 import Timer from './Timer';
 import Toast from './Toast';
 import { useAuth } from '@clerk/nextjs';
@@ -34,10 +34,10 @@ const WorkoutDay: React.FC<WorkoutDayProps> = ({ day, workouts, onComplete }) =>
   useEffect(() => {
     if (Array.isArray(workouts) && workouts.length > 0) {
       setCurrentExercise(workouts[0].name);
-      setCurrentSet(1);
+      setCurrentSet('sets' in workouts[0] ? 1 : null);
     } else if (typeof workouts === 'object' && 'name' in workouts) {
       setCurrentExercise(workouts.name);
-      setCurrentSet(1);
+      setCurrentSet('sets' in workouts ? 1 : null);
     }
   }, [workouts]);
 
@@ -62,15 +62,22 @@ const WorkoutDay: React.FC<WorkoutDayProps> = ({ day, workouts, onComplete }) =>
       const currentWorkoutIndex = workouts.findIndex(w => w.name === currentExercise);
       const currentWorkout = workouts[currentWorkoutIndex];
 
-      if (currentSet < currentWorkout.sets) {
-        setCurrentSet(prev => prev! + 1);
-      } else if (currentWorkoutIndex < workouts.length - 1) {
-        setCurrentExercise(workouts[currentWorkoutIndex + 1].name);
-        setCurrentSet(1);
+      if ('sets' in currentWorkout && currentSet !== null) {
+        if (currentSet < currentWorkout.sets) {
+          setCurrentSet(prev => (prev !== null ? prev + 1 : 1));
+        } else if (currentWorkoutIndex < workouts.length - 1) {
+          setCurrentExercise(workouts[currentWorkoutIndex + 1].name);
+          setCurrentSet('sets' in workouts[currentWorkoutIndex + 1] ? 1 : null);
+        }
+      } else if ('duration' in currentWorkout) {
+        if (currentWorkoutIndex < workouts.length - 1) {
+          setCurrentExercise(workouts[currentWorkoutIndex + 1].name);
+          setCurrentSet('sets' in workouts[currentWorkoutIndex + 1] ? 1 : null);
+        }
       }
-    } else if (typeof workouts === 'object' && 'name' in workouts) {
-      if (currentSet < workouts.sets) {
-        setCurrentSet(prev => prev! + 1);
+    } else if (typeof workouts === 'object' && 'name' in workouts && 'sets' in workouts) {
+      if (currentSet !== null && currentSet < workouts.sets) {
+        setCurrentSet(prev => (prev !== null ? prev + 1 : 1));
       }
     }
   }, [workouts, currentExercise, currentSet]);
@@ -165,16 +172,18 @@ const WorkoutDay: React.FC<WorkoutDayProps> = ({ day, workouts, onComplete }) =>
   const renderWorkout = useCallback((workout: Workout) => (
     <div key={workout.name} className="mb-6 p-4 border border-gray-700 rounded bg-gradient-to-r from-gray-900 to-gray-800">
       <h4 className="font-semibold text-lg mb-2 text-blue-400">{workout.name}</h4>
-      {Array.from({ length: workout.sets }, (_, i) => i + 1).map(setNumber =>
-        renderSet(workout.name, setNumber, workout.reps)
+      {'sets' in workout && 'reps' in workout && (
+        Array.from({ length: workout.sets }, (_, i) => i + 1).map(setNumber =>
+          renderSet(workout.name, setNumber, workout.reps.toString())
+        )
       )}
-      {workout.work && workout.rest && (
+      {'work' in workout && 'rest' in workout && (
         <p className="text-gray-300 text-xs sm:text-sm md:text-base">{workout.sets} rounds of {workout.work} work, {workout.rest} rest</p>
       )}
-      {workout.duration && (
+      {'duration' in workout && (
         <p className="text-gray-300 text-xs sm:text-sm md:text-base">{workout.duration}</p>
       )}
-      {workout.exercises && (
+      {'exercises' in workout && (
         <ul className="list-disc list-inside text-gray-300 text-xs sm:text-sm md:text-base">
           {workout.exercises.map((exercise, i) => (
             <li key={i}>{exercise.name}: {exercise.reps || exercise.duration}</li>

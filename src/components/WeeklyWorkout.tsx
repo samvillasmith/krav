@@ -1,5 +1,5 @@
 import React from 'react';
-import { WeekData } from '@/types/workouts';
+import { WeekData, Workout, BaseWorkout } from '@/types/workouts';
 import Link from 'next/link';
 
 type WeeklyWorkoutProps = {
@@ -7,6 +7,21 @@ type WeeklyWorkoutProps = {
 };
 
 const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
+  const renderWorkout = (workout: Workout) => {
+    if ('sets' in workout && 'reps' in workout) {
+      return `${workout.name} - ${workout.sets} sets, ${workout.reps} reps`;
+    } else if ('duration' in workout) {
+      return `${workout.name} - ${workout.duration}`;
+    } else if ('work' in workout && 'rest' in workout) {
+      return `${workout.name} - ${workout.sets} rounds of ${workout.work} work, ${workout.rest} rest`;
+    } else if ('exercises' in workout) {
+      return `${workout.name} - Circuit workout`;
+    } else {
+      // This case handles the BaseWorkout type or any unexpected workout type
+      return (workout as BaseWorkout).name || 'Unknown workout';
+    }
+  };
+
   return (
     <div className="mb-8">
       <h2 className="text-2xl font-bold mb-4">Week {weeklyWorkout.week}</h2>
@@ -17,7 +32,7 @@ const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
             <ul>
               {workouts.map((workout, index) => (
                 <li key={index} className="mb-1">
-                  {workout.name} - {workout.sets} sets, {workout.reps} reps
+                  {renderWorkout(workout)}
                 </li>
               ))}
             </ul>

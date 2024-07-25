@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { WeekData, Workout } from '@/types/workouts';
+import { WeekWorkouts as WeeklyWorkoutType } from '@/types/workouts';
 import Link from 'next/link';
-import WeekProgress from './WeekProgress';
 import { useAuth } from '@clerk/nextjs';
 
 type WeeklyWorkoutProps = {
-  weeklyWorkout: WeekData;
+  weeklyWorkout: WeeklyWorkoutType & { week: number };
 };
 
 const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
@@ -35,38 +34,48 @@ const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
     fetchCompletedDays();
   }, [weeklyWorkout.week, getToken]);
 
-  const getWorkoutDescription = (workouts: string | Workout[]): string => {
-    if (Array.isArray(workouts)) {
-      return `${workouts.length} exercises`;
-    } else if (typeof workouts === 'string') {
-      return workouts;
-    } else {
-      return 'Unknown workout type';
-    }
-  };
-
   return (
     <div className="mb-8 bg-gray-800 bg-opacity-50 p-4 rounded-lg">
       <h2 className="text-2xl font-bold mb-4 text-blue-400">Week {weeklyWorkout.week}</h2>
-      <WeekProgress completedDays={completedDays} totalDays={Object.keys(weeklyWorkout.workouts).length} />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Object.entries(weeklyWorkout.workouts).map(([day, workouts]) => (
-          <Link 
-            key={day} 
-            href={`/week/${weeklyWorkout.week}/${day.toLowerCase()}`}
-            className="mb-4 bg-gray-800 bg-opacity-50 p-4 rounded-lg hover:bg-opacity-70 transition-all duration-300"
-          >
-            <h3 className="text-xl sm:text-2xl font-bold mb-4 text-blue-400 hover:text-black transition-colors duration-300">
-              {day}
-            </h3>
-            <p className="text-gray-300 text-xs sm:text-sm md:text-base">
-              {getWorkoutDescription(workouts)}
-            </p>
-            {completedDays.includes(day.toLowerCase()) && (
-              <span className="text-green-500 ml-2">✓</span>
-            )}
-          </Link>
-        ))}
+        {Object.entries(weeklyWorkout.workouts).map(([day, workouts]) => {
+          const isCompleted = completedDays.includes(day.toLowerCase());
+          
+          const WorkoutContent = (
+            <>
+              <h3 className="text-xl sm:text-2xl font-bold mb-4 text-blue-400 hover:text-black transition-colors duration-300">
+                {day}
+              </h3>
+              <p className="text-gray-300 text-xs sm:text-sm md:text-base">
+                {Array.isArray(workouts) 
+                  ? `${workouts.length} exercises` 
+                  : typeof workouts === 'object' && 'name' in workouts
+                    ? workouts.name 
+                    : 'Unknown workout'}
+              </p>
+              {isCompleted && (
+                <span className="text-green-500 mt-2 inline-block">✓ Completed</span>
+              )}
+            </>
+          );
+
+          return isCompleted ? (
+            <div 
+              key={day}
+              className="mb-4 bg-gray-800 bg-opacity-50 p-4 rounded-lg opacity-50"
+            >
+              {WorkoutContent}
+            </div>
+          ) : (
+            <Link 
+              key={day}
+              href={`/week/${weeklyWorkout.week}/${day.toLowerCase()}`}
+              className="mb-4 bg-gray-800 bg-opacity-50 p-4 rounded-lg hover:bg-opacity-70 transition-all duration-300"
+            >
+              {WorkoutContent}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

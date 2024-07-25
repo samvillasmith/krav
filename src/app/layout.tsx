@@ -13,7 +13,7 @@ export default function RootLayout({
         <body className="h-full bg-black text-white">
           <SignedOut>
             <main className="flex min-h-screen flex-col items-center justify-center p-4 text-center">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8">Welcome to Krav</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8">Welcome to Ancient Gains</h1>
               <SignInButton mode="modal">
                 <button className="text-blue-400 hover:text-blue-300 text-base sm:text-lg transition duration-300 ease-in-out transform hover:scale-105">
                   Sign In
@@ -24,7 +24,7 @@ export default function RootLayout({
           <SignedIn>
             <div className="flex flex-col min-h-screen">
               <nav className="bg-gray-800 p-4 flex justify-between items-center">
-                <Link href="/" className="text-xl font-bold">Krav</Link>
+                <Link href="/" className="text-xl font-bold">Ancient Gains</Link>
                 <div className="flex items-center space-x-4">
                   <Link href="/" className="hover:text-blue-300">Home</Link>
                   <Link href="/profile" className="hover:text-blue-300">Profile</Link>

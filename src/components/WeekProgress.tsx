@@ -1,4 +1,3 @@
-// src/components/WeekProgress.tsx
 import React, { useEffect, useState } from 'react';
 
 type WeekProgressProps = {
@@ -10,18 +9,14 @@ const WeekProgress: React.FC<WeekProgressProps> = ({ completedDays, totalDays })
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const calculatedProgress = (completedDays.length / totalDays) * 100;
+    const calculatedProgress = completedDays ? (completedDays.length / totalDays) * 100 : 0;
     setProgress(calculatedProgress);
-    
-    console.log('Completed days:', completedDays);
-    console.log('Total days:', totalDays);
-    console.log('Progress:', calculatedProgress);
   }, [completedDays, totalDays]);
 
   return (
-    <div className="w-full bg-gray-200 rounded-full h-2.5">
-      <div 
-        className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
+    <div className="w-full bg-gray-700 rounded-full h-4">
+      <div
+        className="bg-blue-600 h-4 rounded-full transition-all duration-500 ease-in-out"
         style={{ width: `${progress}%` }}
       ></div>
     </div>

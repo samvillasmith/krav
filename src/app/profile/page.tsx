@@ -115,7 +115,7 @@ export default function ProfilePage() {
           <p>Total Sets: {profile.totalSets}</p>
           <p>Total Weight Lifted: {profile.totalWeightLifted} lbs</p>
           <p>Total Days Completed: {profile.totalDaysCompleted}</p>
-          <p>Total Weeks Completed: {profile.totalWeeksCompleted}</p>
+          <p>Total Weeks Engaged: {profile.totalWeeksCompleted}</p>
           <p className="mt-4 text-sm text-gray-400">Last Updated: {new Date(profile.updatedAt || '').toLocaleString()}</p>
         </div>
       )}

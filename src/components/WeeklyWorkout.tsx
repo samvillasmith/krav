@@ -43,7 +43,7 @@ const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
           
           const WorkoutContent = (
             <>
-              <h3 className="text-xl sm:text-2xl font-bold mb-4 text-blue-400 hover:text-black transition-colors duration-300">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4 text-blue-400 hover:text-white transition-colors duration-300">
                 {day}
               </h3>
               <p className="text-gray-300 text-xs sm:text-sm md:text-base">
@@ -70,7 +70,7 @@ const WeeklyWorkout: React.FC<WeeklyWorkoutProps> = ({ weeklyWorkout }) => {
             <Link 
               key={day}
               href={`/week/${weeklyWorkout.week}/${day.toLowerCase()}`}
-              className="mb-4 bg-gray-800 bg-opacity-50 p-4 rounded-lg hover:bg-opacity-70 transition-all duration-300"
+              className="mb-4 bg-gray-800 bg-opacity-50 p-4 rounded-lg hover:bg-gray-700 transition-all duration-300"
             >
               {WorkoutContent}
             </Link>

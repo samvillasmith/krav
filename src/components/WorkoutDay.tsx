@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-'use client';
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Workout, StandardWorkout, HIITWorkout, DurationWorkout, CircuitWorkout } from '@/types/workouts';
 import Timer from './Timer';
@@ -44,6 +42,7 @@ const WorkoutDay: React.FC<WorkoutDayProps> = ({ day, workouts, onComplete, week
 
   const handleSetRecord = useCallback((exerciseName: string, setNumber: number, reps: string, weight: string) => {
     if (!reps.trim() || !weight.trim()) {
+      alert('Please enter both reps and weight.');
       return;
     }
 
@@ -123,63 +122,73 @@ const WorkoutDay: React.FC<WorkoutDayProps> = ({ day, workouts, onComplete, week
     const isCompleted = workoutRecord[exerciseName]?.some(set => set.setNumber === setNumber);
 
     return (
-      <div 
-        key={`${exerciseName}-set-${setNumber}`} 
-        className={`flex flex-wrap items-center space-x-2 mb-2 p-2 rounded ${
-          isCurrentSet 
-            ? 'bg-gradient-to-r from-blue-900 to-blue-700' 
+      <div
+        key={`${exerciseName}-set-${setNumber}`}
+        className={`mb-4 p-4 rounded-lg shadow-md ${
+          isCurrentSet
+            ? 'bg-blue-500'
             : isCompleted
-              ? 'bg-gradient-to-r from-green-900 to-green-700'
-              : 'bg-gradient-to-r from-gray-900 to-gray-800'
+              ? 'bg-green-500'
+              : 'bg-gray-800'
         }`}
       >
-        <span className={`w-12 text-xs sm:text-sm md:text-base ${isCurrentSet ? 'text-blue-200' : 'text-gray-300'}`}>Set {setNumber}</span>
-        <span className={`w-16 text-xs sm:text-sm md:text-base ${isCurrentSet ? 'text-blue-200' : 'text-gray-300'}`}>Goal: {goalReps}</span>
-        <input
-          type="text"
-          value={reps}
-          onChange={(e) => setReps(e.target.value)}
-          className="border bg-gray-800 text-white p-1 w-16 sm:w-20 text-xs sm:text-sm md:text-base mt-1"
-          placeholder="Reps"
-          disabled={isCompleted}
-        />
-        <input
-          type="text"
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-          className="border bg-gray-800 text-white p-1 w-16 sm:w-20 text-xs sm:text-sm md:text-base mt-1"
-          placeholder="Weight"
-          disabled={isCompleted}
-        />
-        <button
-          onClick={() => handleSetRecord(exerciseName, setNumber, reps, weight)}
-          className={`${
-            isCompleted 
-              ? 'bg-green-600 cursor-not-allowed' 
-              : 'bg-blue-600 hover:bg-blue-700'
-          } text-white font-bold py-1 px-2 rounded transition duration-300 text-xs sm:text-sm md:text-base mt-1`}
-          disabled={isCompleted}
-        >
-          {isCompleted ? 'Completed' : 'Enter'}
-        </button>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+          <span className={`text-lg font-semibold mb-2 md:mb-0 ${isCurrentSet || isCompleted ? 'text-white' : 'text-blue-400'}`}>
+            Set {setNumber}
+          </span>
+          <span className={`text-lg font-semibold ${isCurrentSet || isCompleted ? 'text-white' : 'text-blue-400'}`}>
+            Goal: {goalReps}
+          </span>
+        </div>
+        <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+          <input
+            type="text"
+            value={reps}
+            onChange={(e) => setReps(e.target.value)}
+            className="border border-gray-300 rounded p-2 bg-gray-700 text-white"
+            placeholder="Reps"
+            disabled={isCompleted}
+          />
+          <input
+            type="text"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            className="border border-gray-300 rounded p-2 bg-gray-700 text-white"
+            placeholder="Weight"
+            disabled={isCompleted}
+          />
+          <button
+            onClick={() => handleSetRecord(exerciseName, setNumber, reps, weight)}
+            className={`${
+              isCompleted
+                ? 'bg-gray-400 cursor-not-allowed'
+                : isCurrentSet
+                  ? 'bg-gray-800 text-blue-400 hover:bg-gray-700'
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+            } font-semibold py-2 px-4 rounded transition duration-300`}
+            disabled={isCompleted}
+          >
+            {isCompleted ? 'Completed' : 'Enter'}
+          </button>
+        </div>
       </div>
     );
   }, [currentExercise, currentSet, handleSetRecord, workoutRecord]);
 
   const renderWorkout = useCallback((workout: Workout) => (
-    <div key={workout.name} className="mb-6 p-4 border border-gray-700 rounded bg-gradient-to-r from-gray-900 to-gray-800">
-      <h4 className="font-semibold text-lg mb-2 text-blue-400">{workout.name}</h4>
+    <div key={workout.name} className="mb-8 p-4 bg-gray-800 rounded-lg shadow-md">
+      <h3 className="text-xl font-semibold mb-4 text-blue-400">{workout.name}</h3>
       {'sets' in workout && 'reps' in workout && Array.from({ length: workout.sets }, (_, i) => i + 1).map(setNumber =>
         renderSet(workout.name, setNumber, workout.reps)
       )}
       {'work' in workout && 'rest' in workout && (
-        <p className="text-gray-300 text-xs sm:text-sm md:text-base">{workout.sets} rounds of {workout.work} work, {workout.rest} rest</p>
+        <p className="text-gray-300">{workout.sets} rounds of {workout.work} work, {workout.rest} rest</p>
       )}
       {'duration' in workout && (
-        <p className="text-gray-300 text-xs sm:text-sm md:text-base">{workout.duration}</p>
+        <p className="text-gray-300">{workout.duration}</p>
       )}
       {'exercises' in workout && (
-        <ul className="list-disc list-inside text-gray-300 text-xs sm:text-sm md:text-base">
+        <ul className="list-disc list-inside text-gray-300">
           {workout.exercises.map((exercise, i) => (
             <li key={i}>{exercise.name}: {exercise.reps || exercise.duration}</li>
           ))}
@@ -189,18 +198,18 @@ const WorkoutDay: React.FC<WorkoutDayProps> = ({ day, workouts, onComplete, week
   ), [renderSet]);
 
   return (
-    <div className="mb-4 bg-gray-800 bg-opacity-50 p-4 rounded-lg hover:bg-opacity-70 transition-all duration-300">
-      <h3 className="text-xl sm:text-2xl font-bold mb-4 text-blue-400 hover:text-black transition-colors duration-300">{day}</h3>
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4 text-blue-400">{day}</h2>
       {Array.isArray(workouts) ? (
         workouts.map(renderWorkout)
       ) : typeof workouts === 'object' ? (
         renderWorkout(workouts as Workout)
       ) : (
-        <p className="text-gray-300 text-xs sm:text-sm md:text-base">{workouts}</p>
+        <p className="text-gray-300">{workouts}</p>
       )}
       <button
         onClick={finishWorkout}
-        className="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+        className="mt-8 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded transition duration-300 w-full md:w-auto"
       >
         Finish Workout
       </button>
@@ -208,8 +217,8 @@ const WorkoutDay: React.FC<WorkoutDayProps> = ({ day, workouts, onComplete, week
         <Timer onComplete={handleTimerComplete} onCancel={handleTimerCancel} />
       )}
       {showToast && (
-        <Toast 
-          message="Congratulations! You've completed your workout!" 
+        <Toast
+          message="Congratulations! You've completed your workout!"
           onClose={() => setShowToast(false)}
         />
       )}

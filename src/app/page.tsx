@@ -8,12 +8,16 @@ export default function Home() {
   const { isSignedIn, isLoaded } = useUser();
 
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-2xl font-semibold">Loading...</div>
+      </div>
+    );
   }
 
   if (!isSignedIn) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center">
+      <main className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
         <h1 className="text-4xl font-bold mb-8">Welcome to Krav</h1>
         <p className="mb-4">Please sign in to view your workouts</p>
       </main>
@@ -21,16 +25,17 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-24">
+    <main className="min-h-screen flex flex-col items-center p-6">
       <h1 className="text-4xl font-bold mb-8">Workout Phase {workoutData.phase}</h1>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {workoutData.weekly_workouts.map((week) => (
-          <Link 
-            key={week.week} 
+          <Link
+            key={week.week}
             href={`/week/${week.week}`}
-            className="p-4 border rounded hover:bg-gray-100"
+            className="bg-gray-800 p-6 rounded-lg shadow-md text-center transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-700"
           >
-            Week {week.week}
+            <h2 className="text-2xl font-semibold mb-2">Week {week.week}</h2>
+            <p className="text-gray-400">Click to view workouts</p>
           </Link>
         ))}
       </div>
